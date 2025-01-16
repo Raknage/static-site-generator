@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -39,6 +39,37 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(
             node2.to_html(), '<a href="https://www.google.com">Click me!</a>'
         )
+
+
+class TestParentNode(unittest.TestCase):
+    def test_to_html(self):
+        self.assertEqual(
+            ParentNode(
+                "p",
+                [
+                    LeafNode("b", "Bold text"),
+                    LeafNode(None, "Normal text"),
+                    LeafNode("i", "italic text"),
+                    LeafNode(None, "Normal text"),
+                ],
+            ).to_html(),
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
+        )
+
+        self.assertEqual(
+            ParentNode(
+                "p",
+                [LeafNode("b", "Bold text")],
+                {"style": "color"},
+            ).to_html(),
+            '<p style="color"><b>Bold text</b></p>',
+        )
+
+        with self.assertRaises(ValueError):
+            ParentNode("div", [ParentNode("b", [], None)]).to_html()
+
+        with self.assertRaises(ValueError):
+            ParentNode("div", [], None).to_html()
 
 
 if __name__ == "__main__":
