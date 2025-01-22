@@ -1,5 +1,4 @@
-from textnode import TextNode
-from textnode import TextType
+from textnode import TextNode, TextType
 from htmlnode import HTMLNode
 
 
@@ -10,4 +9,5 @@ def main():
     print(html_node)
 
 
-main()
+if __name__ == "__main__":
+    main()
