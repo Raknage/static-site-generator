@@ -6,6 +6,8 @@ from split_nodes import (
     split_nodes_delimiter,
     extract_markdown_images,
     extract_markdown_links,
+    split_nodes_image,
+    split_nodes_link,
 )
 
 
@@ -84,6 +86,48 @@ class Test_Extract_Markdown(unittest.TestCase):
             [
                 ("to boot dev", "https://www.boot.dev"),
                 ("to youtube", "https://www.youtube.com/@bootdotdev"),
+            ],
+        )
+
+
+class Test_Split_Images_And_Links(unittest.TestCase):
+    def test_split_nodes_image(self):
+        node = TextNode(
+            "This is text with ![an image](https://www.link.to/image.png) and ![another image](https://www.link.to/anotherimage.jpg)",
+            TextType.NORMAL,
+        )
+        new_nodes = split_nodes_image([node])
+
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with ", TextType.NORMAL),
+                TextNode("an image", TextType.IMAGE, "https://www.link.to/image.png"),
+                TextNode(" and ", TextType.NORMAL),
+                TextNode(
+                    "another image",
+                    TextType.IMAGE,
+                    "https://www.link.to/anotherimage.jpg",
+                ),
+            ],
+        )
+
+    def test_split_nodes_link(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.NORMAL,
+        )
+        new_nodes = split_nodes_link([node])
+
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a link ", TextType.NORMAL),
+                TextNode("to boot dev", TextType.LINK, "https://www.boot.dev"),
+                TextNode(" and ", TextType.NORMAL),
+                TextNode(
+                    "to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"
+                ),
             ],
         )
 
