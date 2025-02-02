@@ -8,6 +8,7 @@ from split_nodes import (
     extract_markdown_links,
     split_nodes_image,
     split_nodes_link,
+    text_to_textnodes,
 )
 
 
@@ -93,7 +94,7 @@ class Test_Extract_Markdown(unittest.TestCase):
 class Test_Split_Images_And_Links(unittest.TestCase):
     def test_split_nodes_image(self):
         node = TextNode(
-            "This is text with ![an image](https://www.link.to/image.png) and ![another image](https://www.link.to/anotherimage.jpg)",
+            "This is text with ![an image](https://www.link.to/image.png) and ![another image](https://www.link.to/anotherimage.jpg) also text in the end",
             TextType.NORMAL,
         )
         new_nodes = split_nodes_image([node])
@@ -109,6 +110,21 @@ class Test_Split_Images_And_Links(unittest.TestCase):
                     TextType.IMAGE,
                     "https://www.link.to/anotherimage.jpg",
                 ),
+                TextNode(" also text in the end", TextType.NORMAL),
+            ],
+        )
+        self.assertEqual(
+            split_nodes_image(
+                [
+                    TextNode(
+                        "This is **text** with ![an image](https://www.link.to/image.png)",
+                        TextType.NORMAL,
+                    )
+                ]
+            ),
+            [
+                TextNode("This is **text** with ", TextType.NORMAL),
+                TextNode("an image", TextType.IMAGE, "https://www.link.to/image.png"),
             ],
         )
 
@@ -128,6 +144,28 @@ class Test_Split_Images_And_Links(unittest.TestCase):
                 TextNode(
                     "to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"
                 ),
+            ],
+        )
+
+    def test_text_to_textnodes(self):
+
+        self.assertEqual(
+            text_to_textnodes(
+                "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+            ),
+            [
+                TextNode("This is ", TextType.NORMAL),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.NORMAL),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.NORMAL),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.NORMAL),
+                TextNode(
+                    "obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"
+                ),
+                TextNode(" and a ", TextType.NORMAL),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
             ],
         )
 
