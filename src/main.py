@@ -10,8 +10,11 @@ def main():
     from_path = "content/index.md"
     template_path = "template.html"
     dest_path = "public/index.html"
+    dir_path_content = "./content"
+    dest_dir_path = "./public"
     copy_static_to_public(source, destination)
-    generate_page(from_path, template_path, dest_path)
+    # generate_page(from_path, template_path, dest_path)
+    generate_pages_recursive(dir_path_content, template_path, dest_dir_path)
 
 
 def copy_static_to_public(source, destination):
@@ -68,6 +71,26 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as f:
         print(f"writing HTML to file {dest_path}")
         f.write(html_page)
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    file_list = listdir(dir_path_content)
+    if len(file_list) == 0:
+        return
+    for file in file_list:
+        source_filepath = path.join(dir_path_content, file)
+        if path.isfile(source_filepath):
+            destination_filepath = path.join(dest_dir_path, "index.html")
+            print(f"Generating HTML: {source_filepath} to {destination_filepath}")
+            generate_page(source_filepath, template_path, destination_filepath)
+        else:
+            destination_filepath = path.join(dest_dir_path, file)
+            print(f"New folder: {source_filepath} to {destination_filepath}")
+            mkdir(destination_filepath)
+            generate_pages_recursive(
+                source_filepath, template_path, destination_filepath
+            )
+    return
 
 
 if __name__ == "__main__":
