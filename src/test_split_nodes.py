@@ -26,6 +26,25 @@ class Test_split_nodes(unittest.TestCase):
             ],
         )
 
+    def test_delimiter_code_times_two(self):
+        node = TextNode(
+            "An elaborate pantheon of deities (the `Valar` and `Maiar`)",
+            TextType.NORMAL,
+            None,
+        )
+        new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
+
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("An elaborate pantheon of deities (the ", TextType.NORMAL),
+                TextNode("Valar", TextType.CODE),
+                TextNode(" and ", TextType.NORMAL),
+                TextNode("Maiar", TextType.CODE),
+                TextNode(")", TextType.NORMAL),
+            ],
+        )
+
     def test_delimiter_bold_and_italic(self):
         node = TextNode(
             "This is text with a **bolded** and *italic* words", TextType.NORMAL

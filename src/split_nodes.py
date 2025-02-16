@@ -4,20 +4,25 @@ import re
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
-    for node in old_nodes:
-        nodes = node.text.split(delimiter)
-        if node.text.count(delimiter) % 2 != 0:
-            raise ValueError("Not valid markdown syntax")
-
-        if node.text_type != TextType.NORMAL:
-            new_nodes.append(node)
-        elif len(nodes) == 3:
-            new_nodes.append(TextNode(nodes[0], TextType.NORMAL))
-            new_nodes.append(TextNode(nodes[1], text_type))
-            new_nodes.append(TextNode(nodes[2], TextType.NORMAL))
-        elif node.text_type == TextType.NORMAL:
-            new_nodes.append(node)
-
+    if len(old_nodes) == 0:
+        return new_nodes
+    node = old_nodes[0]
+    if node.text.count(delimiter) % 2 != 0:
+        raise ValueError("Not valid markdown syntax")
+    if node.text_type == TextType.NORMAL:
+        nodes_text = node.text.split(delimiter, 2)
+        if len(nodes_text) >= 1:
+            new_nodes.append(TextNode(nodes_text[0], TextType.NORMAL))
+        if len(nodes_text) >= 2:
+            new_nodes.append(TextNode(nodes_text[1], text_type))
+            new_nodes.extend(
+                split_nodes_delimiter(
+                    [TextNode(nodes_text[2], TextType.NORMAL)], delimiter, text_type
+                )
+            )
+    else:
+        new_nodes.append(node)
+    new_nodes.extend(split_nodes_delimiter(old_nodes[1:], delimiter, text_type))
     return new_nodes
 
 
