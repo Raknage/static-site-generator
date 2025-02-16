@@ -74,10 +74,10 @@ func main(){
         )
 
     def test_block_to_heading(self):
-        markdown_h = "# Tolkien Fan Club"
+        markdown_h = "# Tolkien **Fan** Club"
         self.assertEqual(
             markdown_to_html_node(markdown_h).to_html(),
-            "<div><h1>Tolkien Fan Club</h1></div>",
+            "<div><h1>Tolkien <b>Fan</b> Club</h1></div>",
         )
 
     def test_block_to_code(self):

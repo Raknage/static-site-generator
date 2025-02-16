@@ -60,8 +60,8 @@ def block_to_code(block):
 
 def block_to_heading(block):
     count = block.count("#", 0, 6)
-    text = text_to_children(block.strip("# "))[0].value
-    return LeafNode(f"h{count}", text)
+    leafnodes = text_to_children(block.strip("# "))
+    return ParentNode(f"h{count}", leafnodes)
 
 
 def text_to_children(text):
