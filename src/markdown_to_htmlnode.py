@@ -42,7 +42,7 @@ def block_to_ordered_list(block):
 
 def block_to_unordered_list(block):
     list_items = [
-        ParentNode("li", text_to_children(line.lstrip("* ")))
+        ParentNode("li", text_to_children(line.lstrip("- ")))
         for line in block.split("\n")
     ]
     return ParentNode("ul", list_items)

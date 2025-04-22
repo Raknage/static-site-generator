@@ -170,7 +170,7 @@ class Test_Split_Images_And_Links(unittest.TestCase):
 
         self.assertEqual(
             text_to_textnodes(
-                "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+                "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
             ),
             [
                 TextNode("This is ", TextType.NORMAL),

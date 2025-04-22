@@ -9,14 +9,14 @@ class TestMarkdownToHTMLNode(unittest.TestCase):
 
 **I like Tolkien**. Read my [first post here](/majesty) (sorry the link doesn't work yet)
 
-> All that is *gold* does **not** glitter
+> All that is _gold_ does **not** glitter
 
 ## Reasons I like Tolkien
 
-* You can spend years studying the legendarium and still not understand its depths
-* It can be enjoyed by children and adults alike
-* Disney *didn't ruin it*
-* It created an entirely new genre of fantasy
+- You can spend years studying the legendarium and still not understand its depths
+- It can be enjoyed by children and adults alike
+- Disney _didn't ruin it_
+- It created an entirely new genre of fantasy
 
 ## My favorite characters (in order)
 
@@ -57,7 +57,7 @@ func main(){
         )
 
     def test_block_to_unordered_list(self):
-        markdown_ul = "* You can spend years studying the legendarium and still not understand its depths\n* It can be enjoyed by children and adults alike\n* Disney *didn't ruin it*\n* It created an entirely new genre of fantasy"
+        markdown_ul = "- You can spend years studying the legendarium and still not understand its depths\n- It can be enjoyed by children and adults alike\n- Disney _didn't ruin it_\n- It created an entirely new genre of fantasy"
         self.assertEqual(
             markdown_to_html_node(markdown_ul).to_html(),
             "<div><ul><li>You can spend years studying the legendarium and still not understand its depths</li><li>It can be enjoyed by children and adults alike</li><li>Disney <i>didn't ruin it</i></li><li>It created an entirely new genre of fantasy</li></ul></div>",
@@ -65,7 +65,7 @@ func main(){
 
     def test_block_to_quote(self):
         markdown_quote = (
-            "> All that is *gold* does **not** glitter\n> All That Glitters Is Not Gold"
+            "> All that is _gold_ does **not** glitter\n> All That Glitters Is Not Gold"
         )
 
         self.assertEqual(

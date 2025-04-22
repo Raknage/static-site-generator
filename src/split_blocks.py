@@ -13,7 +13,7 @@ def block_to_blocktype(block):
         return "code"
     elif re.fullmatch(r"^>.*(?:\n>.*|)*$", block, re.MULTILINE):
         return "quote"
-    elif re.fullmatch(r"^(\*|\+|-) \w+.*(?:\n(\*|\+|-) \w+.*)*$", block, re.MULTILINE):
+    elif re.fullmatch(r"^(\*|\+|-) \S+.*(?:\n(\*|\+|-) \S+.*)*$", block, re.MULTILINE):
         return "unordered_list"
     elif re.fullmatch(r"^\d+\. .+\n?(\d+\. .+\n?)*$", block, re.MULTILINE):
         return "ordered_list"

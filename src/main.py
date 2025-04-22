@@ -3,6 +3,8 @@ from os import path, mkdir, listdir, makedirs
 from shutil import copy, rmtree
 from markdown_to_htmlnode import markdown_to_html_node
 
+separator = "----------------------------------------------------"
+
 
 def main():
     source = "./static"
@@ -25,6 +27,7 @@ def copy_static_to_public(source, destination):
     mkdir(destination)
     copy_files_recursive(source, destination)
     print(f"all files copied from {source} to {destination}")
+    print(separator)
 
 
 def copy_files_recursive(source, destination):
@@ -71,6 +74,7 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as f:
         print(f"writing HTML to file {dest_path}")
         f.write(html_page)
+    print(separator)
 
 
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
