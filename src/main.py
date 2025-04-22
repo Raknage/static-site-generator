@@ -1,4 +1,5 @@
 import re
+import sys
 from os import path, mkdir, listdir, makedirs
 from shutil import copy, rmtree
 from markdown_to_htmlnode import markdown_to_html_node
@@ -7,16 +8,15 @@ separator = "----------------------------------------------------"
 
 
 def main():
+    basepath = "/"
+    if len(sys.argv) == 2:
+        basepath = sys.argv[1]
     source = "./static"
-    destination = "./public"
-    from_path = "content/index.md"
     template_path = "template.html"
-    dest_path = "public/index.html"
     dir_path_content = "./content"
-    dest_dir_path = "./public"
-    copy_static_to_public(source, destination)
-    # generate_page(from_path, template_path, dest_path)
-    generate_pages_recursive(dir_path_content, template_path, dest_dir_path)
+    dest_dir_path = "./docs"
+    copy_static_to_public(source, dest_dir_path)
+    generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath)
 
 
 def copy_static_to_public(source, destination):
@@ -55,7 +55,7 @@ def extract_title(markdown):
         raise ValueError("Heading missing from markdown")
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, "r") as markdown_file:
         markdown = markdown_file.read()
@@ -63,8 +63,11 @@ def generate_page(from_path, template_path, dest_path):
         template = template_file.read()
     html_string = markdown_to_html_node(markdown).to_html()
     title = extract_title(markdown)
-    html_page = template.replace("{{ Title }}", title).replace(
-        "{{ Content }}", html_string
+    html_page = (
+        template.replace("{{ Title }}", title)
+        .replace("{{ Content }}", html_string)
+        .replace('href="/', f'href="{basepath}')
+        .replace('src="/', f'src="{basepath}')
     )
     if path.exists(path.dirname(dest_path)):
         print(f"Path {path.dirname(dest_path)} exists")
@@ -77,7 +80,7 @@ def generate_page(from_path, template_path, dest_path):
     print(separator)
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     file_list = listdir(dir_path_content)
     if len(file_list) == 0:
         return
@@ -86,13 +89,15 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         if path.isfile(source_filepath):
             destination_filepath = path.join(dest_dir_path, "index.html")
             print(f"Generating HTML: {source_filepath} to {destination_filepath}")
-            generate_page(source_filepath, template_path, destination_filepath)
+            generate_page(
+                source_filepath, template_path, destination_filepath, basepath
+            )
         else:
             destination_filepath = path.join(dest_dir_path, file)
             print(f"New folder: {source_filepath} to {destination_filepath}")
             mkdir(destination_filepath)
             generate_pages_recursive(
-                source_filepath, template_path, destination_filepath
+                source_filepath, template_path, destination_filepath, basepath
             )
     return
 
